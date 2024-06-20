@@ -1,0 +1,13 @@
+config BR2_PACKAGE_R36S_DEMO_APP
+	bool "r36s_demo_app"
+	depends on BR2_PACKAGE_HOST_GO_TARGET_ARCH_SUPPORTS
+	depends on BR2_PACKAGE_HOST_GO_TARGET_CGO_LINKING_SUPPORTS
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_PACKAGE_SDL2_GFX
+	depends on BR2_PACKAGE_SDL2_MIXER
+	depends on BR2_PACKAGE_SDL2_TTF
+	help
+	  Graphical demonstration app for the R36S game console
+
+	  https://github.com/AndreRenaud/r36s-demo-app
+
