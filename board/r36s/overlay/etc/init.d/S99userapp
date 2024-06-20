@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Start the user application...
+#
+
+case "$1" in
+  start)
+    echo "Starting user app..."
+    # TODO
+    ;;
+  stop)
+    echo -n "Stopping user app..."
+    # TODO
+    ;;
+  restart|reload)
+    "$0" stop
+    "$0" start
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?
