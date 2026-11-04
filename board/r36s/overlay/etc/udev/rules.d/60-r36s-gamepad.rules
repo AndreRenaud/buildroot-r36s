@@ -1,0 +1,9 @@
+# The R36S buttons and analog sticks reach games through "R36S Gamepad"
+# (r36s-gamepad), which merges them and grabs the two raw devices. Hide those
+# from SDL too, or it offers them as more controllers. gpio-keys only needs
+# to lose its joystick tag; SDL would still guess adc-joystick is one from its
+# axes, so make it root-only as well.
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="gpio-keys|adc-joystick", \
+  ENV{ID_INPUT_JOYSTICK}=""
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="adc-joystick", \
+  GROUP="root", MODE="0600"

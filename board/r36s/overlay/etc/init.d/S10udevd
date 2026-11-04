@@ -18,9 +18,9 @@
 # R36S: Buildroot's package/eudev/S10udevd, changed so that the user app
 # (S12userapp) doesn't wait for the whole coldplug (≈ 1 s). Only the input,
 # DRM and sound devices are settled here: SDL needs udev's input properties to
-# see the buttons (gpio-keys) as a gamepad, and the rules give the player
-# access to all three. The rest (loading the VPU, thermal and power key
-# modules, and so on) carries on in the background.
+# see the gamepad (R36S Gamepad), and the rules give the player access to all
+# three. The rest (loading the VPU, thermal and power key modules, and so on)
+# carries on in the background.
 #
 
 DAEMON="udevd"

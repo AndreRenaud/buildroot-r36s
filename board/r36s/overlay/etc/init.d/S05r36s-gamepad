@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Merge the buttons (gpio-keys) and analog sticks (adc-joystick) into one
+# gamepad, "R36S Gamepad" (r36s-gamepad, through uinput). Started before
+# udev (S10udevd), whose input coldplug then sets up the new device; its
+# rules (60-r36s-gamepad.rules) hide the two raw devices from the player.
+#
+
+DAEMON=r36s-gamepad
+PIDFILE=/var/run/$DAEMON.pid
+
+case "$1" in
+	start)
+		printf "Starting %s: " "$DAEMON"
+		if start-stop-daemon --start --background --make-pidfile \
+			--pidfile "$PIDFILE" --exec /usr/sbin/$DAEMON; then
+			echo "OK"
+		else
+			echo "FAIL"
+		fi
+		;;
+	stop)
+		printf "Stopping %s: " "$DAEMON"
+		start-stop-daemon --stop --pidfile "$PIDFILE" --exec /usr/sbin/$DAEMON
+		rm -f "$PIDFILE"
+		echo "OK"
+		;;
+	restart|reload)
+		"$0" stop
+		"$0" start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit 0

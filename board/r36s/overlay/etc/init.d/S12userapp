@@ -16,10 +16,8 @@ APP_LOG=/tmp/quake2.log
 # shellcheck source=/dev/null
 [ -r /etc/default/userapp ] && . /etc/default/userapp
 
-# SDL's automatic mapping for the R36S buttons (gpio-keys) swaps X and Y and
-# leaves out Select, Start, FN and the stick clicks (BTN_TRIGGER_HAPPY1-5).
-# The analog sticks are a separate device (adc-joystick) and aren't used yet.
-export SDL_GAMECONTROLLERCONFIG="1900bb07010000000100000000010000,gpio-keys,platform:Linux,a:b0,b:b1,x:b3,y:b2,leftshoulder:b4,rightshoulder:b5,lefttrigger:b6,righttrigger:b7,dpup:b8,dpdown:b9,dpleft:b10,dpright:b11,back:b12,start:b13,leftstick:b14,rightstick:b15,guide:b16,"
+# The controls are one gamepad, "R36S Gamepad" (S05r36s-gamepad), which SDL
+# maps by itself.
 
 case "$1" in
 	start)
