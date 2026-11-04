@@ -1,0 +1,118 @@
+#!/bin/sh
+#
+# udev	This is a minimal non-LSB version of a UDEV startup script.  It
+#	was derived by stripping down the udev-058 LSB version for use
+#	with buildroot on embedded hardware using Linux 2.6.34+ kernels.
+#
+#	You may need to customize this for your system's resource limits
+#	(including startup time!) and administration.  For example, if
+#	your early userspace has a custom initramfs or initrd you might
+#	need /dev much earlier; or without hotpluggable busses (like USB,
+#	PCMCIA, MMC/SD, and so on) your /dev might be static after boot.
+#
+#	This script assumes your system boots right into the eventual root
+#	filesystem, and that init runs this udev script before any programs
+#	needing more device nodes than the bare-bones set -- /dev/console,
+#	/dev/zero, /dev/null -- that's needed to boot and run this script.
+#
+# R36S: Buildroot's package/eudev/S10udevd, changed so that the user app
+# (S12userapp) doesn't wait for the whole coldplug (≈ 1 s). Only the input,
+# DRM and sound devices are settled here: SDL needs udev's input properties to
+# see the buttons (gpio-keys) as a gamepad, and the rules give the player
+# access to all three. The rest (loading the VPU, thermal and power key
+# modules, and so on) carries on in the background.
+#
+
+DAEMON="udevd"
+PIDFILE="/var/run/$DAEMON.pid"
+
+SETTLE_TIMEOUT=30
+UDEVD_ARGS=""
+
+# shellcheck source=/dev/null
+[ -r "/etc/default/$DAEMON" ] && . "/etc/default/$DAEMON"
+
+start() {
+	printf "Starting %s: " "$DAEMON"
+	[ -e /proc/sys/kernel/hotplug ] && printf '\000\000\000\000' > /proc/sys/kernel/hotplug
+	# shellcheck disable=SC2086 # we need the word splitting
+	start-stop-daemon --start --background --make-pidfile \
+		--pidfile "$PIDFILE" --exec "/sbin/$DAEMON" \
+		-- $UDEVD_ARGS
+	status=$?
+	if [ "$status" -eq 0 ]; then
+		echo "OK"
+	else
+		echo "FAIL"
+	fi
+	# start-stop-daemon returns before udevd is listening, and uevents sent
+	# before then are lost. udevd binds its control socket just after its
+	# netlink one, so wait for that (normally ≈ 0.1 s).
+	i=0
+	while [ ! -S /run/udev/control ] && [ $i -lt 100 ]; do
+		sleep 0.01
+		i=$((i + 1))
+	done
+	udevadm trigger --type=devices --action=add \
+		--subsystem-match=input --subsystem-match=drm --subsystem-match=sound
+	udevadm settle --timeout=$SETTLE_TIMEOUT || echo "udevadm settle failed"
+	# Triggering the subsystems takes ≈ 0.25 s itself, so it's left until now
+	{
+		udevadm trigger --type=subsystems --action=add
+		udevadm trigger --type=devices --action=add \
+			--subsystem-nomatch=input --subsystem-nomatch=drm \
+			--subsystem-nomatch=sound
+	} &
+	return "$status"
+}
+
+stop() {
+	printf "Stopping %s: " "$DAEMON"
+	udevadm control --exit
+	status=$?
+	if [ "$status" -eq 0 ]; then
+		echo "OK"
+	else
+		echo "FAIL"
+		return "$status"
+	fi
+	while start-stop-daemon --stop --test --quiet --pidfile "$PIDFILE" \
+		--exec "/sbin/$DAEMON"; do
+		sleep 0.1
+	done
+	rm -f "$PIDFILE"
+	return "$status"
+}
+
+restart() {
+	stop
+	start
+}
+
+reload() {
+	printf "Reloading %s config: " "$DAEMON"
+	udevadm control --reload
+	status=$?
+	if [ "$status" -eq 0 ]; then
+		echo "OK"
+	else
+		echo "FAIL"
+	fi
+	return "$status"
+}
+
+case "$1" in
+	start)
+		start;;
+	stop)
+		stop;;
+	restart)
+		restart;;
+	reload)
+		reload;;
+	*)
+		echo "Usage: $0 {start|stop|restart|reload}"
+		exit 1
+esac
+
+exit $?
