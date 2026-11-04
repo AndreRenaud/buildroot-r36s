@@ -1,0 +1,7 @@
+config BR2_PACKAGE_R36S_GAMEPAD
+	bool "r36s-gamepad"
+	help
+	  Presents the R36S buttons (gpio-keys) and analog sticks
+	  (adc-joystick) as a single uinput gamepad, "R36S Gamepad",
+	  with button codes that SDL maps automatically. Needs
+	  CONFIG_INPUT_UINPUT in the kernel.
