@@ -1,0 +1,14 @@
+bootdelay=0
+bootargs=console=ttyS2,1500000n8 earlycon root=/dev/mmcblk0p2 rootfstype=ext4 rootwait vt.global_cursor_default=0 fbcon=logo-pos:center,logo-count:1 panic=3
+boot_discrete=load mmc 1:1 0x02000000 Image && load mmc 1:1 0x01f00000 rk3326-r36s.dtb && booti 0x02000000 - 0x01f00000
+boot_itb=load mmc 1:1 0x10000000 image.itb && bootm 0x10000000
+
+tftpserver=192.168.2.140
+net_up=usb start && setenv autoload no && dhcp
+netboot_itb=r36s/image.itb
+boot_net=run net_up && tftpboot 0x10000000 ${tftpserver}:${netboot_itb} && bootm 0x10000000
+uboot_dev=r36s/u-boot-dev.bin
+chain_sd=load mmc 1:1 0x800000 u-boot-dev.bin && go 0x800000
+chain_net=run net_up && tftpboot 0x800000 ${tftpserver}:${uboot_dev} && usb stop && dcache off && icache off && go 0x800000
+
+bootcmd=if test "${netboot}" = 1; then run boot_net; fi; run boot_discrete; run boot_itb
