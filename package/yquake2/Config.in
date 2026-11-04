@@ -1,0 +1,41 @@
+config BR2_PACKAGE_YQUAKE2
+	bool "yquake2"
+	depends on BR2_PACKAGE_HAS_LIBGLES # ref_gles3
+	depends on !BR2_STATIC_LIBS # sdl3, dlopen() of renderer and game
+	depends on BR2_USE_WCHAR # sdl3
+	depends on BR2_TOOLCHAIN_HAS_THREADS # sdl3
+	select BR2_PACKAGE_SDL3
+	select BR2_PACKAGE_SDL3_OPENGLES
+	help
+	  Yamagi Quake II, an enhanced client for id Software's
+	  Quake II. Only the OpenGL ES 3 renderer (ref_gles3) is
+	  built. Enable an SDL3 video driver such as KMS/DRM to run it.
+
+	  The game data is not included. The binaries go in
+	  /usr/lib/yquake2 (with a quake2 symlink in /usr/bin), and the
+	  game looks for its data in /usr/share/games/quake2/baseq2.
+
+	  https://www.yamagi.org/quake2/
+
+if BR2_PACKAGE_YQUAKE2
+
+config BR2_PACKAGE_YQUAKE2_DEMO_DATA
+	bool "Quake II demo data"
+	help
+	  Download the Quake II demo (q2-314-demo-x86.exe) and install
+	  its game data (pak0.pak and the player skins) in
+	  /usr/share/games/quake2/baseq2. It contains the first few
+	  levels of the game.
+
+	  The demo data is not free software. id Software's demo licence
+	  allows only non-commercial, recreational use; forbids public
+	  display, selling and commercial use; and allows redistribution
+	  only free of charge, by electronic means, with the licence
+	  attached. The licence is installed as
+	  /usr/share/games/quake2/demo-license.txt.
+
+endif
+
+comment "yquake2 needs OpenGL ES and a toolchain w/ dynamic library, wchar, threads"
+	depends on !BR2_PACKAGE_HAS_LIBGLES || BR2_STATIC_LIBS || \
+		!BR2_USE_WCHAR || !BR2_TOOLCHAIN_HAS_THREADS

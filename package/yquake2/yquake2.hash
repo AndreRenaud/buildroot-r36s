@@ -1,0 +1,7 @@
+# Locally computed
+sha256  37e4143e4d362d7b93ba7a8d2c36a945fbcae82aef386512032200233b1750c8  quake2-8.70.tar.xz
+sha256  71cedf562c786b4c2a617419206ad77d43d37c1020fbc3bf6ecf1fa110d58e05  LICENSE
+# Locally computed; the md5 4d1cd4618e80a38db59304132ea0856c published in
+# doc/020_installation.md matches
+sha256  7ace5a43983f10d6bdc9d9b6e17a1032ba6223118d389bd170df89b945a04a1e  q2-314-demo-x86.exe
+sha256  5d23d6248e292d810d4925a6ec32ca5b179a20d4273a73638b11fbd12e4c11d0  demo/Install/Data/DOCS/license.txt
