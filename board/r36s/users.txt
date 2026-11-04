@@ -1,0 +1,1 @@
+player -1 player -1 * /home/player /bin/sh video,audio,input R36S player

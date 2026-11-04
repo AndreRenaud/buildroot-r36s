@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Start the user application: Quake II (Yamagi Quake II, GLES3 renderer) as
+# the unprivileged "player" user, straight into the first map of the demo.
+# Quake II refuses to run as root. Its R36S settings (renderer options,
+# gamepad binds) are in /usr/share/games/quake2/baseq2/autoexec.cfg.
+#
+# It runs once udev has set up the devices: SDL needs udev's input
+# properties to see the buttons (gpio-keys) as a gamepad.
+#
+
+APP_USER=player
+APP_LOG=/tmp/quake2.log
+
+# e.g. APP_LOG=/dev/console to time Quake's start-up on the serial console
+# shellcheck source=/dev/null
+[ -r /etc/default/userapp ] && . /etc/default/userapp
+
+# SDL's automatic mapping for the R36S buttons (gpio-keys) swaps X and Y and
+# leaves out Select, Start, FN and the stick clicks (BTN_TRIGGER_HAPPY1-5).
+# The analog sticks are a separate device (adc-joystick) and aren't used yet.
+export SDL_GAMECONTROLLERCONFIG="1900bb07010000000100000000010000,gpio-keys,platform:Linux,a:b0,b:b1,x:b3,y:b2,leftshoulder:b4,rightshoulder:b5,lefttrigger:b6,righttrigger:b7,dpup:b8,dpdown:b9,dpleft:b10,dpright:b11,back:b12,start:b13,leftstick:b14,rightstick:b15,guide:b16,"
+
+case "$1" in
+	start)
+		echo "Starting user app..."
+		# Quake II creates its XDG data directory, but not the parents
+		# shellcheck disable=SC2016 # $HOME is the player's, expanded by su's shell
+		su $APP_USER -c 'mkdir -p "$HOME/.local/share" && exec quake2 +map demo1' \
+			< /dev/null > $APP_LOG 2>&1 &
+		;;
+	stop)
+		printf "Stopping user app..."
+		killall quake2
+		# Quake saves its config as it exits. This is stopped late in the
+		# shutdown, so wait for it, or / can't be remounted read-only afterwards.
+		i=0
+		while pidof quake2 > /dev/null && [ $i -lt 50 ]; do
+			sleep 0.1
+			i=$((i + 1))
+		done
+		echo " OK"
+		;;
+	restart|reload)
+		"$0" stop
+		"$0" start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
