@@ -1,0 +1,18 @@
+config BR2_PACKAGE_LIBRETRO_FBNEO
+	bool "libretro-fbneo"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  FinalBurn Neo, an arcade emulator (Neo Geo, CPS-1/2/3 and
+	  many more), as a libretro core. It loads zipped romsets
+	  matching its own DAT files. All the drivers are built, so
+	  this takes a long time to build and the core is large.
+
+	  Its licence does not allow commercial use.
+
+	  Installs /usr/lib/libretro/fbneo_libretro.so.
+
+	  https://github.com/libretro/FBNeo
+
+comment "libretro-fbneo needs a toolchain w/ C++, dynamic library"
+	depends on BR2_STATIC_LIBS || !BR2_INSTALL_LIBSTDCPP
