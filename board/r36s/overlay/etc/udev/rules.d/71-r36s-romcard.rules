@@ -1,0 +1,5 @@
+# The card in the second microSD slot (mmc1, see the mmc aliases in the
+# device tree) holds the user's ROMs: mount its FAT32 or exFAT filesystem on
+# /roms. It may or may not have a partition table.
+SUBSYSTEM=="block", KERNEL=="mmcblk1|mmcblk1p1", ACTION=="add", ENV{ID_FS_TYPE}=="vfat|exfat", RUN+="/usr/sbin/r36s-romcard add /dev/%k $env{ID_FS_TYPE}"
+SUBSYSTEM=="block", KERNEL=="mmcblk1|mmcblk1p1", ACTION=="remove", RUN+="/usr/sbin/r36s-romcard remove /dev/%k"

@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Mount or unmount the ROM card (second microSD slot) on /roms; run by udev
+# (71-r36s-romcard.rules). It is mounted read-only, as the card can be pulled
+# out at any time: r36s-menu remounts it read-write for a moment when it has
+# screenshots to add. To copy ROMs over SFTP, make it writable first with
+# "r36s-romcard rw" (as root), and "r36s-romcard ro" afterwards. The files
+# belong to the "player" user.
+#
+
+MNT=/roms
+
+case "$1" in
+	add)
+		mountpoint -q "$MNT" && exit 0
+		opts="ro,noatime,uid=$(id -u player),gid=$(id -g player),fmask=0133,dmask=0022"
+		[ "$3" = vfat ] && opts="$opts,flush,utf8"
+		mount -t "$3" -o "$opts" "$2" "$MNT"
+		;;
+	remove)
+		grep -q "^$2 $MNT " /proc/mounts && umount -l "$MNT"
+		;;
+	rw|ro)
+		mountpoint -q "$MNT" || { echo "No card on $MNT"; exit 1; }
+		[ "$1" = ro ] && sync
+		mount -o "remount,$1" "$MNT"
+		;;
+	*)
+		echo "Usage: $0 {add|remove} DEVICE [FSTYPE] | {rw|ro}"
+		exit 1
+esac

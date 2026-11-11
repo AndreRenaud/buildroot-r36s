@@ -1,0 +1,5 @@
+# Get an address by DHCP on a USB Ethernet adapter whenever one is plugged in
+# (or is there at boot), so the unit can be reached with SSH/SFTP. udhcpc
+# is started detached, as udev doesn't let a RUN program stay.
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth*", RUN+="/sbin/start-stop-daemon -S -b -q -m -p /run/udhcpc.%k.pid -x /sbin/udhcpc -- -f -i %k -R -x hostname:R36S"
+ACTION=="remove", SUBSYSTEM=="net", KERNEL=="eth*", RUN+="/sbin/start-stop-daemon -K -q -p /run/udhcpc.%k.pid"

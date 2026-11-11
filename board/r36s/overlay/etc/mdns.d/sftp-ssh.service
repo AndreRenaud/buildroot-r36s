@@ -1,0 +1,2 @@
+type _sftp-ssh._tcp
+port 22
