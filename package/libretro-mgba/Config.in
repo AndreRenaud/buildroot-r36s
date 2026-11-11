@@ -1,0 +1,14 @@
+config BR2_PACKAGE_LIBRETRO_MGBA
+	bool "libretro-mgba"
+	depends on !BR2_STATIC_LIBS
+	help
+	  mGBA, a Game Boy Advance emulator (it also runs Game Boy
+	  and Game Boy Color games), as a libretro core. It is an
+	  interpreter: there is no dynamic recompiler to enable.
+
+	  Installs /usr/lib/libretro/mgba_libretro.so.
+
+	  https://github.com/libretro/mgba
+
+comment "libretro-mgba needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
