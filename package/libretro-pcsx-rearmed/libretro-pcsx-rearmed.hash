@@ -1,0 +1,5 @@
+# Locally computed
+sha256  4f47bd98bac6cdf62dd4f7a56069b0b0d9999aa6800e636334d1788c5cf38ccf  libretro-pcsx-rearmed-7b0e8f8fadfbce3d170d195b9d9eecaabfa08c8e.tar.gz
+sha256  0efb4db8000c609bd2f06e61fcbc59af05519d122f5b3597b7c493224946c61d  COPYING
+sha256  e3989a7aee74a91b8cdbdfe204a6b8d03288863ec7533a21c51f1a987ba73539  deps/libchdr/LICENSE.txt
+sha256  06721414a6decad6d6677feb470f01f47126e154d895d85bc1e17628697715e5  deps/libchdr/deps/lzma-26.02/LICENSE

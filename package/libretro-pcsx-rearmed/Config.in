@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LIBRETRO_PCSX_REARMED
+	bool "libretro-pcsx-rearmed"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	help
+	  PCSX ReARMed, a Sony PlayStation emulator, as a libretro
+	  core. It renders in software: no OpenGL is needed. On ARM
+	  and AArch64 it is built with the "ari64" dynamic recompiler
+	  and, where there is NEON, the NEON GPU plugin.
+
+	  Installs /usr/lib/libretro/pcsx_rearmed_libretro.so.
+
+	  https://github.com/libretro/pcsx_rearmed
+
+comment "libretro-pcsx-rearmed needs a toolchain w/ threads, dynamic library"
+	depends on BR2_STATIC_LIBS || !BR2_TOOLCHAIN_HAS_THREADS
