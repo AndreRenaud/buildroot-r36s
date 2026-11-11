@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LIBRETRO_SNES9X2005
+	bool "libretro-snes9x2005"
+	depends on !BR2_STATIC_LIBS
+	help
+	  Snes9x 2005, a libretro core based on Snes9x 1.43: less
+	  accurate than libretro-snes9x but much faster, for CPUs
+	  that cannot run the current version at full speed.
+
+	  The Snes9x licence does not allow commercial use.
+
+	  Installs /usr/lib/libretro/snes9x2005_libretro.so.
+
+	  https://github.com/libretro/snes9x2005
+
+comment "libretro-snes9x2005 needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
