@@ -1,0 +1,17 @@
+config BR2_PACKAGE_LIBRETRO_PICODRIVE
+	bool "libretro-picodrive"
+	depends on !BR2_STATIC_LIBS
+	help
+	  PicoDrive, a fast Sega Mega Drive/Genesis, Mega CD, 32X,
+	  Master System and Game Gear emulator, as a libretro core.
+	  The SH2 dynamic recompiler (32X) is built on ARM, AArch64,
+	  x86, MIPS, RISC-V and PowerPC.
+
+	  Its licence does not allow commercial use.
+
+	  Installs /usr/lib/libretro/picodrive_libretro.so.
+
+	  https://github.com/libretro/picodrive
+
+comment "libretro-picodrive needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
