@@ -1,0 +1,13 @@
+config BR2_PACKAGE_LIBRETRO_FCEUMM
+	bool "libretro-fceumm"
+	depends on !BR2_STATIC_LIBS
+	help
+	  FCEUmm, a NES/Famicom (and Famicom Disk System) emulator, as
+	  a libretro core.
+
+	  Installs /usr/lib/libretro/fceumm_libretro.so.
+
+	  https://github.com/libretro/libretro-fceumm
+
+comment "libretro-fceumm needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
