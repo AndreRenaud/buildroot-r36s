@@ -1,0 +1,17 @@
+config BR2_PACKAGE_LIBRETRO_MAME2003_PLUS
+	bool "libretro-mame2003-plus"
+	depends on !BR2_STATIC_LIBS
+	help
+	  MAME 2003-Plus, an arcade emulator based on MAME 0.78 with
+	  later drivers backported, as a libretro core. It loads
+	  zipped romsets matching its own (0.78-based) DAT file.
+
+	  The MAME licence of that time does not allow commercial
+	  use.
+
+	  Installs /usr/lib/libretro/mame2003_plus_libretro.so.
+
+	  https://github.com/libretro/mame2003-plus-libretro
+
+comment "libretro-mame2003-plus needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
