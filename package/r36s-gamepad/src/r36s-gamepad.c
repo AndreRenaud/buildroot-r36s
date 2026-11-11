@@ -134,11 +134,14 @@ static int create_gamepad(int buttons, int sticks)
 		}
 	}
 
-	/* The same IDs as gpio-keys; the name keeps SDL's GUID distinct */
+	/*
+	 * No vendor or product ID, so SDL and Ebitengine identify the gamepad by
+	 * its name and use their automatic mapping. gpio-keys' IDs (0001:0001,
+	 * version 0100) match other handhelds in their gamepad databases:
+	 * Ebitengine leaves SDL's name checksum out of its GUIDs, so it took this
+	 * for an Anbernic RG28XX (D-pad on a hat, no sticks).
+	 */
 	setup.id.bustype = BUS_HOST;
-	setup.id.vendor = 0x0001;
-	setup.id.product = 0x0001;
-	setup.id.version = 0x0100;
 	strcpy(setup.name, GAMEPAD_NAME);
 	if (ioctl(fd, UI_DEV_SETUP, &setup) < 0 ||
 	    ioctl(fd, UI_DEV_CREATE) < 0) {
