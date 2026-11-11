@@ -1,0 +1,37 @@
+config BR2_PACKAGE_RETROARCH
+	bool "retroarch"
+	depends on BR2_PACKAGE_HAS_LIBEGL
+	depends on BR2_PACKAGE_HAS_LIBGLES
+	depends on BR2_PACKAGE_HAS_LIBGBM
+	depends on BR2_PACKAGE_HAS_UDEV
+	depends on BR2_TOOLCHAIN_HAS_THREADS # alsa-lib, libdrm
+	depends on !BR2_STATIC_LIBS # dlopen() of the cores
+	select BR2_PACKAGE_ALSA_LIB
+	select BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_ZLIB
+	help
+	  RetroArch, the reference frontend for the libretro API. It
+	  loads an emulator ("core") built as a shared library and
+	  provides its video, audio and input.
+
+	  This is a minimal console build: KMS/DRM + GBM + EGL video
+	  with the OpenGL ES "gl" driver, ALSA audio and udev
+	  input/joypads. X11, Wayland, SDL, Vulkan, networking, the
+	  online updater and the asset-based menus are all disabled;
+	  only the built-in RGUI menu is kept.
+
+	  The cores are separate packages (libretro-*), installed in
+	  /usr/lib/libretro. Run one with:
+
+	    retroarch --config /etc/retroarch.cfg \
+	        -L /usr/lib/libretro/<core>_libretro.so <rom>
+
+	  No retroarch.cfg is installed: provide one, e.g. from a
+	  rootfs overlay.
+
+	  https://www.retroarch.com/
+
+comment "retroarch needs udev /dev management, an EGL/OpenGL ES/GBM provider, a toolchain w/ threads, dynamic library"
+	depends on !BR2_PACKAGE_HAS_LIBEGL || !BR2_PACKAGE_HAS_LIBGLES || \
+		!BR2_PACKAGE_HAS_LIBGBM || !BR2_PACKAGE_HAS_UDEV || \
+		!BR2_TOOLCHAIN_HAS_THREADS || BR2_STATIC_LIBS
