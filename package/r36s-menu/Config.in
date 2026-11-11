@@ -1,0 +1,32 @@
+config BR2_PACKAGE_R36S_MENU
+	bool "r36s-menu"
+	depends on BR2_PACKAGE_HOST_GO_TARGET_ARCH_SUPPORTS
+	depends on BR2_aarch64 || BR2_x86_64 # Ebitengine's GBM/KMS backend
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on !BR2_STATIC_LIBS # dlopen()
+	depends on BR2_PACKAGE_HAS_LIBEGL
+	depends on BR2_PACKAGE_HAS_LIBGLES
+	depends on BR2_PACKAGE_HAS_LIBGBM
+	select BR2_PACKAGE_LIBDRM
+	help
+	  The R36S's ROM menu: it lists the ROMs on the card in the
+	  second SD slot (/roms), with their screenshots, and runs
+	  RetroArch with the right libretro core for the chosen one.
+	  It also shows the battery level and the card's usage.
+
+	  Written with Ebitengine, which draws with OpenGL ES 3
+	  through EGL on a GBM/KMS display, without X11 or Wayland.
+	  It loads libEGL, libGLESv2, libgbm and libdrm with dlopen(),
+	  so they aren't linked.
+
+	  At run time it needs retroarch and the libretro cores for
+	  the systems to be played.
+
+	  https://github.com/AndreRenaud/r36s-menu
+
+comment "r36s-menu needs EGL, OpenGL ES, GBM and a toolchain w/ threads, dynamic library"
+	depends on BR2_PACKAGE_HOST_GO_TARGET_ARCH_SUPPORTS
+	depends on BR2_aarch64 || BR2_x86_64
+	depends on !BR2_PACKAGE_HAS_LIBEGL || !BR2_PACKAGE_HAS_LIBGLES || \
+		!BR2_PACKAGE_HAS_LIBGBM || !BR2_TOOLCHAIN_HAS_THREADS || \
+		BR2_STATIC_LIBS
