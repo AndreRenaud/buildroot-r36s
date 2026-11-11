@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LIBRETRO_GENESIS_PLUS_GX
+	bool "libretro-genesis-plus-gx"
+	depends on !BR2_STATIC_LIBS
+	help
+	  Genesis Plus GX, an accurate Sega Mega Drive/Genesis, Mega
+	  CD, Master System, Game Gear and SG-1000 emulator, as a
+	  libretro core.
+
+	  Its licence does not allow commercial use.
+
+	  Installs /usr/lib/libretro/genesis_plus_gx_libretro.so.
+
+	  https://github.com/libretro/Genesis-Plus-GX
+
+comment "libretro-genesis-plus-gx needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS

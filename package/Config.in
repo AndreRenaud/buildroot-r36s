@@ -305,6 +305,7 @@ endmenu
 menu "Libretro"
 	source "package/libretro-fceumm/Config.in"
 	source "package/libretro-gambatte/Config.in"
+	source "package/libretro-genesis-plus-gx/Config.in"
 	source "package/libretro-mgba/Config.in"
 	source "package/libretro-snes9x/Config.in"
 	source "package/libretro-snes9x2005/Config.in"
