@@ -1,0 +1,14 @@
+config BR2_PACKAGE_LIBRETRO_GAMBATTE
+	bool "libretro-gambatte"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  Gambatte, an accuracy-focused Game Boy and Game Boy Color
+	  emulator, as a libretro core.
+
+	  Installs /usr/lib/libretro/gambatte_libretro.so.
+
+	  https://github.com/libretro/gambatte-libretro
+
+comment "libretro-gambatte needs a toolchain w/ C++, dynamic library"
+	depends on BR2_STATIC_LIBS || !BR2_INSTALL_LIBSTDCPP

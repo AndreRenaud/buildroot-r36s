@@ -303,6 +303,7 @@ menu "Games"
 endmenu
 
 menu "Libretro"
+	source "package/libretro-gambatte/Config.in"
 	source "package/retroarch/Config.in"
 endmenu
 
