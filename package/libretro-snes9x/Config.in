@@ -1,0 +1,17 @@
+config BR2_PACKAGE_LIBRETRO_SNES9X
+	bool "libretro-snes9x"
+	depends on !BR2_STATIC_LIBS
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  Snes9x, a Super Nintendo emulator, as a libretro core. This
+	  is the current version: the most compatible, but heavy for
+	  small CPUs (see libretro-snes9x2005).
+
+	  The Snes9x licence does not allow commercial use.
+
+	  Installs /usr/lib/libretro/snes9x_libretro.so.
+
+	  https://github.com/libretro/snes9x
+
+comment "libretro-snes9x needs a toolchain w/ C++, dynamic library"
+	depends on BR2_STATIC_LIBS || !BR2_INSTALL_LIBSTDCPP
