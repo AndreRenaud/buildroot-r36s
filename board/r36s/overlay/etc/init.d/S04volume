@@ -3,7 +3,8 @@
 # Set the default playback volume. The RK817 codec comes up at 0 dB, which is
 # painfully loud on the R36S speaker; 175/255 (-29.8 dB) is comfortable.
 # Runs before the user app (S12userapp) starts making sound.
-# Muted while testing.
+# Silent until the user app sets its own level: r36s-menu restores the one
+# chosen with the volume buttons.
 #
 
 VOLUME=0

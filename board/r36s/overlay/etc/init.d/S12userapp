@@ -1,39 +1,49 @@
 #!/bin/sh
 #
-# Start the user application: Quake II (Yamagi Quake II, GLES3 renderer) as
-# the unprivileged "player" user, straight into the first map of the demo.
-# Quake II refuses to run as root. Its R36S settings (renderer options,
-# gamepad binds) are in /usr/share/games/quake2/baseq2/autoexec.cfg.
+# Start the user application. By default that's the ROM menu (r36s-menu),
+# which draws straight to the display (GBM/KMS) and runs RetroArch for the
+# chosen game. Its supervisor stays root, to remount the ROM card when it has
+# screenshots to add; the menu and the emulator run as the unprivileged
+# "player" user (-user).
+# /etc/default/userapp can choose another app, to run as APP_USER, e.g.
+# APP_USER=player APP=quake2 APP_ARGS="+map demo1" for Quake II, which refuses to run as
+# root; its R36S settings are in /usr/share/games/quake2/baseq2/autoexec.cfg.
 #
 # This runs as soon as udev (S10udevd) has set up the input, DRM and sound
 # devices, while the rest of udev's coldplug carries on in the background.
 #
 
-APP_USER=player
-APP_LOG=/tmp/quake2.log
+APP=r36s-menu
+APP_ARGS="-user player"
+APP_USER=root
+APP_LOG=/tmp/userapp.log
 
-# e.g. APP_LOG=/dev/console to time Quake's start-up on the serial console
+# e.g. APP_LOG=/dev/console to time the app's start-up on the serial console
 # shellcheck source=/dev/null
 [ -r /etc/default/userapp ] && . /etc/default/userapp
 
 # The controls are one gamepad, "R36S Gamepad" (S05r36s-gamepad), which SDL
-# maps by itself.
+# and Ebitengine map by themselves.
 
 case "$1" in
 	start)
 		echo "Starting user app..."
 		# Quake II creates its XDG data directory, but not the parents
-		# shellcheck disable=SC2016 # $HOME is the player's, expanded by su's shell
-		su $APP_USER -c 'mkdir -p "$HOME/.local/share" && exec quake2 +map demo1' \
-			< /dev/null > $APP_LOG 2>&1 &
+		if [ "$APP_USER" = root ]; then
+			# shellcheck disable=SC2086 # we need the word splitting
+			$APP $APP_ARGS < /dev/null > "$APP_LOG" 2>&1 &
+		else
+			su "$APP_USER" -c "mkdir -p \"\$HOME/.local/share\" && exec $APP $APP_ARGS" \
+				< /dev/null > "$APP_LOG" 2>&1 &
+		fi
 		;;
 	stop)
 		printf "Stopping user app..."
-		killall quake2
-		# Quake saves its config as it exits. This is stopped late in the
+		killall "${APP##*/}"
+		# Quake II saves its config as it exits. This is stopped late in the
 		# shutdown, so wait for it, or / can't be remounted read-only afterwards.
 		i=0
-		while pidof quake2 > /dev/null && [ $i -lt 50 ]; do
+		while pidof "${APP##*/}" > /dev/null && [ $i -lt 50 ]; do
 			sleep 0.1
 			i=$((i + 1))
 		done
